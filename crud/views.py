@@ -5,11 +5,14 @@ from rest_framework import status
 from django.conf import settings
 from django.http.response import JsonResponse
 from .models import Company_connection,Company
+
+from django.http           import JsonResponse
+from django.views          import View
+import csv, json
+
 from urllib import parse
-
-
-import csv
 from django.http import Http404
+
 class DataInjectionView(APIView):
     def get(self, request):
 
@@ -53,7 +56,10 @@ class DataInjectionView(APIView):
 
 
 class SearchAPIView(APIView):
-    def get(self, request, *args, **kwargs):
+     def post(self, request):
+         return_lang = request.data
+
+     def get(self, request, *args, **kwargs):
         company_name = None 
         if kwargs.get("company_name", None) is not None: #url path로 받은 회사 이름이 존재하면 초기화
             company_name = kwargs["company_name"]
@@ -89,4 +95,22 @@ class AutoCompleteAPIView(APIView):
         } for company in companies]
 
         return JsonResponse({'Message':results}, status=200)
+      
+class companyEnrollmentView(View):
+    def post(self,request):
+        try:
+            data = json.loads(request.body)
 
+            if data["company_name"] == "" :
+                return JsonResponse ({"MESSAGE":"company name null"}, status = 404) 
+
+            Company.objects.create(
+                name         = data["company_name"],
+                lang_type    = data["lang_type"],
+                tags         = data["tags"],
+                company_id   = data["company_id"]
+            )
+
+            return JsonResponse ({"MESSAGE": "success"}, status=200)
+        except:    
+            return JsonResponse ({"MESSAGE": "already exists company"}, status=404)
