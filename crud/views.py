@@ -105,24 +105,29 @@ class AutoCompleteAPIView(APIView):
 
         return JsonResponse({'Message':results}, status=200)
       
-class companyEnrollmentView(View):
+class companyEnrollmentView(APIView):
     def post(self,request):
         try:
             data = json.loads(request.body)
 
-            if data["company_name"] == "" :
-                return JsonResponse ({"MESSAGE":"company name null"}, status = 404) 
+            if data["name"] == " " :
+                return JsonResponse ({"MESSAGE":"company name null"}, status = 400) 
+
+            if Company.objects.filter(company_name = data["company_name"]).exists():
+                return JsonResponse ({"MESSAGE": "already exists company"}, status=400)
 
             Company.objects.create(
-                name         = data["company_name"],
+                company_name = data["company_name"],
                 lang_type    = data["lang_type"],
                 tags         = data["tags"],
                 company_id   = data["company_id"]
             )
 
             return JsonResponse ({"MESSAGE": "success"}, status=200)
-        except:    
-            return JsonResponse ({"MESSAGE": "already exists company"}, status=404)
+
+        except KeyError:    
+            return JsonResponse ({"MESSAGE": "key error"}, status=404)
+
 
 
 
