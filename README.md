@@ -1,14 +1,15 @@
 # 🔴 [위코드 x 원티드] 원티드랩 기업 협업 과제
 
 ## 🟡 구현 기술 스택
-Language  : Python
+- Language  : Python
 
-Framework :  Django Rest Framework
+- Framework :  Django Rest Framework
 
-Open API (Postman)
+- Open API (Postman)
 
-DB  : sqlite3
-배포 :AWS EC2 with Nginx,Gunicorn
+- DB  : sqlite3
+
+- 배포 :AWS EC2 with Nginx, Gunicorn
 
 ## 🟡 Contributors
 |이름 |담당 기능| GitHub 주소|
@@ -73,8 +74,6 @@ pip install -r requirements.txt
 | POST	| /crud/enrollment	| company_name, tags	| 회사 추가 |
 | GET | /crud/search?query=링크 | query | 검색어 자동완성 |
 | GET | /crud/search/<str:company_name | query| 검색 기능 구현 |
-
-
 
 
 
