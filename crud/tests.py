@@ -43,3 +43,43 @@ class AutoCompleteAPIViewTeest(TestCase):
 
 
 
+class EnrollmentTest(TestCase):
+    def setUp(self):
+        self. maxDiff = None
+
+        enrollment = Company.objects.bulk_create(
+            [Company(
+                name = "스타벅스",
+                lang_type = "ko",
+                tags   = 45,
+                company_id = 4,
+            ),
+            Company(
+                name = "신라호텔",
+                lang_type = "ko",
+                tags   = 20,
+                company_id = 55,
+            ),
+            Company(
+                name = "starbucks",
+                lang_type = "en",
+                tags   = 45,
+                company_id = 4,
+                )
+            ]
+        )
+           
+    def tearDown(self):
+        Company.objects.all().delete()
+        
+    def test_PostView_success(self):
+        client = Client()
+        response = client.get('/posts/2',content_type = 'application/json') 
+
+        self.assertEqual(response.status_code,200)        
+        
+    def test_PostView_error(self):
+        client = Client()
+        response = client.get('/posts/', content_type= 'application/json')
+
+        self.assertEqual(response.status_code,404)    
