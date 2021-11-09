@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.conf import settings
+from django.http.response import JsonResponse
 from .models import Company_connection,Company
 from urllib import parse
 
@@ -87,5 +88,5 @@ class AutoCompleteAPIView(APIView):
             'company_name' : company.name
         } for company in companies]
 
-        return Response(results)
+        return JsonResponse({'Message':results}, status=200)
 
