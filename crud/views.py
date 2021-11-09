@@ -1,3 +1,4 @@
+from django.http import response
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -107,26 +108,36 @@ class AutoCompleteAPIView(APIView):
       
 class companyEnrollmentView(APIView):
     def post(self,request):
-        try:
-            data = json.loads(request.body)
+        x_wanted_language = request.headers.get('x-wanted-language')
+        company_name = request.data['company_name']
+        tags = request.data['tags']
+        length = len(company_name)
 
-            if data["name"] == " " :
-                return JsonResponse ({"MESSAGE":"company name null"}, status = 400) 
 
-            if Company.objects.filter(company_name = data["company_name"]).exists():
-                return JsonResponse ({"MESSAGE": "already exists company"}, status=400)
+        company_connection = Company_connection()
+        company_connection.save()
+                # print(row)
+        result_tags = None
 
-            Company.objects.create(
-                company_name = data["company_name"],
-                lang_type    = data["lang_type"],
-                tags         = data["tags"],
-                company_id   = data["company_id"]
-            )
+        for lan,name in company_name.items():
+            company = Company()
+            company.name = name
+            company.lang_type = lan
+            tag_list = []
+            for tag in tags:
+                tag_list.append( tag['tag_name'][lan]) 
+            company.tags = str(tag_list)
+            company.company_id = company_connection
+            company.save()
 
-            return JsonResponse ({"MESSAGE": "success"}, status=200)
+            if lan == x_wanted_language:
+                result_tags = tag_list
 
-        except KeyError:    
-            return JsonResponse ({"MESSAGE": "key error"}, status=404)
+            results = {
+                'company_name' : company_name[x_wanted_language],
+                'tags' : result_tags
+            }
+        return JsonResponse({'Message':results}, status=200)
 
 
 
