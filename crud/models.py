@@ -10,10 +10,12 @@ class Company(models.Model):
     name = models.CharField(max_length=200, null=False)
     lang_type = models.CharField(max_length=200, null=False)
     tags= models.CharField(max_length=200, null=False)
-    profile= models.ForeignKey(
+    company_id= models.ForeignKey(
         Company_connection,
-        on_delete=models.CASCADE,null=True
+        on_delete=models.CASCADE,null=True,
+        related_name = 'connection_company'
     )
     
+
 
 
