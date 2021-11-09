@@ -78,6 +78,7 @@ pip install -r requirements.txt
 
 
 ## 🟡 프로젝트 회고
-이정우: [블로그] (https://mytech123.tistory.com/)
-성우진: [블로그] (https://velog.io/@jinatra)
-김도담: [블로그] (http://velog.io/damdreammm)
+
+- 이정우: [블로그](https://mytech123.tistory.com/)
+- 성우진: [블로그](https://velog.io/@jinatra)
+- 김도담: [블로그](http://velog.io/@damdreammm)
