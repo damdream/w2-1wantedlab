@@ -67,7 +67,7 @@ class companyEnrollmentView(View):
                 name         = data["company_name"],
                 lang_type    = data["lang_type"],
                 tags         = data["tags"],
-                profile      = data["profile"]
+                company_id   = data["company_id"]
             )
 
             return JsonResponse ({"MESSAGE": "success"}, status=200)
