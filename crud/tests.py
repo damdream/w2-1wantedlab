@@ -43,7 +43,43 @@ class AutoCompleteAPIViewTeest(TestCase):
 
 
 
-class EnrollmentTest(TestCase):
+class SearchAPIViewTeest(TestCase):
+    def setUp(self):
+        company_connection = Company_connection.objects.create(id=1)
+        
+
+        company = Company.objects.create(id=1, name='원티드랩', lang_type='ko', tags=['태그_4', '태그_20', '태그_16'], company_id=company_connection)
+        
+
+    def test_search_get_success(self):
+
+        client = Client()
+        header = {"HTTP_X_WANTED_LANGUAGE": "ko"}
+
+        results = {
+        "company_name": "원티드랩",
+        "tags": [
+            "태그_4",
+            "태그_20",
+            "태그_16"
+        ]
+    }
+        response = client.get('/crud/search/Wantedlab/',**header)
+        print("----------------------")
+        print(response.status_code)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {'Message' : results}
+        )
+
+    def tearDown(self):
+        Company.objects.all().delete()
+        Company_connection.objects.all().delete()
+
+
+
+ class EnrollmentTest(TestCase):
     def setUp(self):
         self. maxDiff = None
 
