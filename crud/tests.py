@@ -79,7 +79,7 @@ class SearchAPIViewTeest(TestCase):
 
 
 
- class EnrollmentTest(TestCase):
+class EnrollmentTest(TestCase):
     def setUp(self):
         self. maxDiff = None
 
@@ -108,14 +108,10 @@ class SearchAPIViewTeest(TestCase):
     def tearDown(self):
         Company.objects.all().delete()
         
-    def test_PostView_success(self):
+    def test_enrollmentView_success(self):
         client = Client()
-        response = client.get('/posts/2',content_type = 'application/json') 
+        response = client.get('/enrollment',content_type = 'application/json') 
 
         self.assertEqual(response.status_code,200)        
         
-    def test_PostView_error(self):
-        client = Client()
-        response = client.get('/posts/', content_type= 'application/json')
-
-        self.assertEqual(response.status_code,404)    
+ 
