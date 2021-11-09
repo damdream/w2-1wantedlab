@@ -12,6 +12,7 @@ import csv, json
 
 from urllib import parse
 from django.http import Http404
+import ast
 
 class DataInjectionView(APIView):
     def get(self, request):
@@ -64,9 +65,11 @@ class SearchAPIView(APIView):
         if kwargs.get("company_name", None) is not None: #url path로 받은 회사 이름이 존재하면 초기화
             company_name = kwargs["company_name"]
         return_type = request.headers.get('x-wanted-language') # 리턴 언어 타입
+      
         try:
             company = Company.objects.get(name = company_name) #만약 입력된 회사가 존재하지 않으면
         except:
+           
             raise Http404
             
         company_connection = Company_connection.objects.get(pk = company.company_id.pk) 
@@ -74,10 +77,10 @@ class SearchAPIView(APIView):
         
         result = {
             "company_name" : company.name,
-            "tags" : company.tags
+            "tags" : ast.literal_eval(company.tags)
         }
 
-        return Response(result)
+        return JsonResponse({'Message':result}, status=200)
 
 class AutoCompleteAPIView(APIView):
     def get(self, request):
@@ -90,9 +93,15 @@ class AutoCompleteAPIView(APIView):
         except:
             raise Http404
 
-        results = [{
-            'company_name' : company.name
-        } for company in companies]
+        suggestions = []
+        for company in companies:
+            company_connection = Company_connection.objects.get(pk = company.company_id.pk) 
+            company = company_connection.connection_company.filter(lang_type = x_wanted_language)[0]
+            suggestions.append(company.name)
+
+        results = {
+            'company_name' : suggestions
+        } 
 
         return JsonResponse({'Message':results}, status=200)
       
@@ -114,3 +123,8 @@ class companyEnrollmentView(View):
             return JsonResponse ({"MESSAGE": "success"}, status=200)
         except:    
             return JsonResponse ({"MESSAGE": "already exists company"}, status=404)
+
+
+
+
+
