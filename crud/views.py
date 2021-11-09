@@ -6,6 +6,7 @@ from django.conf import settings
 from .models import Company_connection,Company
 # Create your views here.
 import csv
+from django.http import Http404
 class DataInjectionView(APIView):
     def get(self, request):
 
@@ -49,5 +50,23 @@ class DataInjectionView(APIView):
 
 
 class SearchAPIView(APIView):
-     def post(self, request):
-         return_lang = request.data
+    def get(self, request, *args, **kwargs):
+        company_name = None 
+        if kwargs.get("company_name", None) is not None: #url path로 받은 회사 이름이 존재하면 초기화
+             company_name = kwargs["company_name"]
+        return_type = request.headers.get('x-wanted-language') # 리턴 언어 타입
+        try:
+            company = Company.objects.get(name = company_name) #만약 입력된 회사가 존재하지 않으면
+        except:
+            raise Http404
+            
+        company_connection = Company_connection.objects.get(pk = company.company_id.pk) 
+        company = company_connection.connection_company.filter(lang_type = return_type)[0]
+        
+        result = {
+            "company_name" : company.name,
+            "tags" : company.tags
+        }
+
+        return Response(result)
+
