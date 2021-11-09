@@ -4,8 +4,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.conf import settings
 from .models import Company_connection,Company
-# Create your views here.
-import csv
+from django.http           import JsonResponse
+from django.views          import View
+import csv, json
 class DataInjectionView(APIView):
     def get(self, request):
 
@@ -51,3 +52,24 @@ class DataInjectionView(APIView):
 class SearchAPIView(APIView):
      def post(self, request):
          return_lang = request.data
+
+
+
+class companyEnrollmentView(View):
+    def post(self,request):
+        try:
+            data = json.loads(request.body)
+
+            if data["company_name"] == "" :
+                return JsonResponse ({"MESSAGE":"company name null"}, status = 404) 
+
+            Company.objects.create(
+                name         = data["company_name"],
+                lang_type    = data["lang_type"],
+                tags         = data["tags"],
+                profile      = data["profile"]
+            )
+
+            return JsonResponse ({"MESSAGE": "success"}, status=200)
+        except:    
+            return JsonResponse ({"MESSAGE": "already exists company"}, status=404)
