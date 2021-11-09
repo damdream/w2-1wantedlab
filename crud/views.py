@@ -4,7 +4,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.conf import settings
 from .models import Company_connection,Company
-# Create your views here.
+from urllib import parse
+
+
 import csv
 from django.http import Http404
 class DataInjectionView(APIView):
@@ -53,7 +55,7 @@ class SearchAPIView(APIView):
     def get(self, request, *args, **kwargs):
         company_name = None 
         if kwargs.get("company_name", None) is not None: #url path로 받은 회사 이름이 존재하면 초기화
-             company_name = kwargs["company_name"]
+            company_name = kwargs["company_name"]
         return_type = request.headers.get('x-wanted-language') # 리턴 언어 타입
         try:
             company = Company.objects.get(name = company_name) #만약 입력된 회사가 존재하지 않으면
@@ -69,4 +71,21 @@ class SearchAPIView(APIView):
         }
 
         return Response(result)
+
+class AutoCompleteAPIView(APIView):
+    def get(self, request):
+        search_value      = request.query_params.get("query", "")
+        decode_search_value = parse.unquote(search_value)
+        x_wanted_language = request.headers.get('x-wanted-language')
+
+        try:
+            companies = Company.objects.filter(name__icontains=decode_search_value)
+        except:
+            raise Http404
+
+        results = [{
+            'company_name' : company.name
+        } for company in companies]
+
+        return Response(results)
 
