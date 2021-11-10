@@ -23,7 +23,10 @@
 - repo 폴더안의 requirements.text 파일을 install 한다.
 pip install -r requirements.txt
 - python manage.py runserver를 통해 서버를 실행한다.
+
 - [Postman API 주소](https://documenter.getpostman.com/view/16843875/UVC5F7ej) 를 통해 확인 가능합니다.
+-  코드는 실제 사용 수준으로 구현되었으나, search api의 경우 postman에서 header값이 담기지 않는 오류를 해결하지 못했습니다.
+-  해당 api의 경우 배포 서버를 통해 확인해주시면 감사드리겠습니다.
 
 ## 🟡 기본 설계
 ![무제](https://user-images.githubusercontent.com/81546305/140999122-f1c0640b-4c5c-4254-ba9c-969291c65e85.jpg)
